@@ -49,6 +49,10 @@ new Handler().postDelayed(new Runnable() {
     }, 0);
 ```
 
+Connections
+----------
+![Conenctions](https://github.com/mplacona/arduwrap/blob/master/arduwrap.png?raw=true)
+
 License
 =======
 
