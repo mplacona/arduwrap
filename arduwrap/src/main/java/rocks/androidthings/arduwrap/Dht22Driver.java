@@ -56,14 +56,9 @@ public class Dht22Driver implements BaseSensor {
         try {
             mDevice.registerUartDeviceCallback(mUartCallback);
         } catch (IOException e) {
-            throw new IllegalStateException("Sensor can't register callback - App is foobar'd", e);
+            throw new IllegalStateException("Sensor can't register callback", e);
         }
     }
-
-//    public void getDHT(String mode, OnMessageCompleteListener listener) throws IOException {
-//        setMessageCompleteListener(listener);
-//        mDevice.write(mode.getBytes(), mode.length());
-//    }
 
     public void getTemperature(TextView field, OnMessageCompleteListener listener) throws IOException {
         String mode = "T";
