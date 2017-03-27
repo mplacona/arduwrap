@@ -65,18 +65,16 @@ public class Dht22Driver implements BaseSensor {
 //        mDevice.write(mode.getBytes(), mode.length());
 //    }
 
-    public void getTemperature(TextView field, OnMessageCompleteListener listener) throws IOException {
+    void getTemperature(OnMessageCompleteListener listener) throws IOException {
         String mode = "T";
         mDevice.write(mode.getBytes(), mode.length());
         this.messageCompleteListener = listener;
-        this.field = field;
     }
 
-    public void getHumidity(TextView field, OnMessageCompleteListener listener) throws IOException {
+    void getHumidity(OnMessageCompleteListener listener) throws IOException {
         String mode = "H";
         mDevice.write(mode.getBytes(), mode.length());
         this.messageCompleteListener = listener;
-        this.field = field;
     }
 
     @Override
@@ -133,7 +131,7 @@ public class Dht22Driver implements BaseSensor {
 
         if(character.compareTo("#") == 0){
             receiving = false;
-            this.messageCompleteListener.onMessageComplete(message.toString(), this.field);
+            this.messageCompleteListener.onMessageComplete(message.toString());
             Log.d(TAG, "Complete Message: " + message);
 
             // clear buffer
