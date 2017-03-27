@@ -1,6 +1,7 @@
 package rocks.androidthings.arduwrap;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.things.pio.PeripheralManagerService;
 import com.google.android.things.pio.UartDevice;
@@ -32,6 +33,7 @@ public class Dht22Driver implements BaseSensor {
     private StringBuffer message = new StringBuffer();
     private boolean receiving = false;
     private OnMessageCompleteListener messageCompleteListener;
+    private TextView field;
 
     public Dht22Driver(Arduino arduino){
         this.arduino = arduino;
@@ -58,23 +60,23 @@ public class Dht22Driver implements BaseSensor {
         }
     }
 
-    public void getDHT(String mode, OnMessageCompleteListener listener) throws IOException {
-        setMessageCompleteListener(listener);
-        mDevice.write(mode.getBytes(), mode.length());
-    }
+//    public void getDHT(String mode, OnMessageCompleteListener listener) throws IOException {
+//        setMessageCompleteListener(listener);
+//        mDevice.write(mode.getBytes(), mode.length());
+//    }
 
-    // TODO: Refactor this to use bytes directly
-    public void getTemperature(OnMessageCompleteListener listener) throws IOException {
-        setMessageCompleteListener(listener);
+    public void getTemperature(TextView field, OnMessageCompleteListener listener) throws IOException {
         String mode = "T";
         mDevice.write(mode.getBytes(), mode.length());
+        this.messageCompleteListener = listener;
+        this.field = field;
     }
 
-    // TODO: And this....
-    public void getHumidity(OnMessageCompleteListener listener) throws IOException {
-        setMessageCompleteListener(listener);
+    public void getHumidity(TextView field, OnMessageCompleteListener listener) throws IOException {
         String mode = "H";
         mDevice.write(mode.getBytes(), mode.length());
+        this.messageCompleteListener = listener;
+        this.field = field;
     }
 
     @Override
@@ -131,8 +133,11 @@ public class Dht22Driver implements BaseSensor {
 
         if(character.compareTo("#") == 0){
             receiving = false;
-            this.messageCompleteListener.onMessageComplete(message.toString());
+            this.messageCompleteListener.onMessageComplete(message.toString(), this.field);
             Log.d(TAG, "Complete Message: " + message);
+
+            // clear buffer
+            message.delete(0, message.length());
         }
 
         if(receiving){
@@ -142,9 +147,5 @@ public class Dht22Driver implements BaseSensor {
         if(character.compareTo("$") == 0){
             receiving = true;
         }
-    }
-
-    private void setMessageCompleteListener(OnMessageCompleteListener messageCompleteListener){
-        this.messageCompleteListener = messageCompleteListener;
     }
 }

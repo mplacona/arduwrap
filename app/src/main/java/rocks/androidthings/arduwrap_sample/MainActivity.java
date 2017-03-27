@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ import rocks.androidthings.arduwrap.Dht22Driver;
 import rocks.androidthings.arduwrap.OnMessageCompleteListener;
 import rocks.androidthings.arduwrap_sample.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMessageCompleteListener {
 
     private static final String TAG = "MainActivity";
     private static final String UART_DEVICE_NAME = "UART0";
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        final TextView temperature = binding.temperatureTv;
+        final TextView humidity = binding.humidityTv;
+
         Arduino mArduino = new Arduino.ArduinoBuilder()
                 .uartDeviceName(UART_DEVICE_NAME)
                 .baudRate(BAUD_RATE)
@@ -37,42 +41,28 @@ public class MainActivity extends AppCompatActivity {
         dht22Driver = new Dht22Driver(mArduino);
         dht22Driver.startup();
 
-        Handler handler = new Handler();
-        Runnable r1 = new Runnable() {
-            @Override
+
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 try {
-                    dht22Driver.getTemperature(new OnMessageCompleteListener() {
-                        @Override
-                        public void onMessageComplete(String message) {
-                            binding.temperatureTv.setText(message);
-                        }
-                    });
+                    dht22Driver.getTemperature(temperature, MainActivity.this);
+                    Log.d(TAG, "run: Temperature");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        };
+        }, 0);
 
-        handler.postDelayed(r1, 1000);
-
-        Runnable r2 = new Runnable() {
-            @Override
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 try {
-                    dht22Driver.getHumidity(new OnMessageCompleteListener() {
-                        @Override
-                        public void onMessageComplete(String message) {
-                            binding.humidityTv.setText(message);
-                        }
-                    });
+                    dht22Driver.getHumidity(humidity, MainActivity.this);
+                    Log.d(TAG, "run: Humidity");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        };
-        handler.postDelayed(r2, 5000);
-
+        }, 1000);
 
     }
 
@@ -80,5 +70,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
         dht22Driver.shutdown();
         super.onDestroy();
+    }
+
+    @Override
+    public void onMessageComplete(String message, TextView field) {
+        field.setText(message);
     }
 }

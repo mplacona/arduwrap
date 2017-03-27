@@ -1,5 +1,7 @@
 package rocks.androidthings.arduwrap;
 
+import android.widget.TextView;
+
 /**
  * Copyright (C) 2017 mplacona.
  * <p>
@@ -17,5 +19,5 @@ package rocks.androidthings.arduwrap;
  */
 
 public interface OnMessageCompleteListener {
-    void onMessageComplete(String message);
+    void onMessageComplete(String message, TextView field);
 }
