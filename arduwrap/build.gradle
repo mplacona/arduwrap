@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+group='com.github.mplacona'
 
 android {
     compileSdkVersion 25
