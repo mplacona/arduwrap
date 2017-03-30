@@ -18,7 +18,7 @@ allprojects {
     }
 }
 dependencies {
-    compile 'com.github.User:Repo:Version'
+    compile 'com.github.mplacona:arduwrap:v0.2'
 }
 ```
 Using:
