@@ -19,5 +19,5 @@ import android.widget.TextView;
  */
 
 public interface OnMessageCompleteListener {
-    void onMessageComplete(String message, TextView field);
+    void onMessageComplete(String message);
 }

@@ -39,23 +39,15 @@ dht22Driver = new Dht22Driver(mArduino);
         dht22Driver.startup();
 ```
 
-- Call it in a handler (to be modified)
+- Call it 
 ```
-new Handler().postDelayed(new Runnable() {
-    public void run() {
-        try {
-            dht22Driver.getTemperature(temperature, MainActivity.this);
-            Log.d(TAG, "run: Temperature");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }, 0);
+String temperature = dht22Driver.getTemperature();
+String humidity = dht22Driver.getHumidity();
 ```
 
 Connections
 ----------
-![Conenctions](https://github.com/mplacona/arduwrap/blob/master/arduwrap.png?raw=true)
+![Connections](https://github.com/mplacona/arduwrap/blob/master/arduwrap.png?raw=true)
 
 License
 =======
