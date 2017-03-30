@@ -35,7 +35,7 @@ Arduino mArduino = new Arduino.ArduinoBuilder()
 
 - Create an instance of the driver you would like to use
 ```
-dht22Driver = new Dht22Driver(mArduino);
+Dht22Driver dht22Driver = new Dht22Driver(mArduino);
         dht22Driver.startup();
 ```
 
