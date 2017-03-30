@@ -16,9 +16,7 @@ package rocks.androidthings.arduwrap;
  * limitations under the License.
  */
 
-public interface BaseSensor {
-    void onStart();
-    void onStop();
+interface BaseSensor {
     void startup();
     void shutdown();
 }
