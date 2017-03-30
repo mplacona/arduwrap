@@ -1,13 +1,11 @@
 package rocks.androidthings.arduwrap_sample;
 
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 import rocks.androidthings.arduwrap.Arduino;
 import rocks.androidthings.arduwrap.Dht22Driver;

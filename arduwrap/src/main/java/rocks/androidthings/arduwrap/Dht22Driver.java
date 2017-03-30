@@ -6,6 +6,7 @@ import com.google.android.things.pio.PeripheralManagerService;
 import com.google.android.things.pio.UartDevice;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * Copyright (C) 2017 mplacona.
@@ -25,9 +26,12 @@ import java.io.IOException;
 
 public class Dht22Driver implements BaseSensor, AutoCloseable {
     private static final String TAG = "Dht22Driver";
+    private static final int CHUNK_SIZE = 10;
+    private ByteBuffer mMessageBuffer = ByteBuffer.allocate(CHUNK_SIZE);
     private final Arduino arduino;
 
     private UartDevice mDevice;
+    private boolean receiving;
 
     public Dht22Driver(Arduino arduino){
         this.arduino = arduino;
@@ -56,7 +60,7 @@ public class Dht22Driver implements BaseSensor, AutoCloseable {
     public String getTemperature() {
         String mode = "T";
         String response = "";
-        byte[] buffer = new byte[10];
+        byte[] buffer = new byte[CHUNK_SIZE];
 
         try {
             response = fillBuffer(buffer, mode);
@@ -90,7 +94,27 @@ public class Dht22Driver implements BaseSensor, AutoCloseable {
         }
 
         mDevice.read(buffer, buffer.length);
-        return new String(buffer, "UTF-8");
+
+        // clear out buffer
+        processBuffer(buffer, buffer.length);
+
+        // return new buffer trimmed
+        return new String(mMessageBuffer.array(), "UTF-8").replaceAll("\0", "");
+    }
+
+    private void processBuffer(byte[] buffer, int length) {
+        for (int i = 0; i < length; i++) {
+            if (0x24 == buffer[i]) {
+                receiving = true;
+            } else if (0x23 == buffer[i]) {
+                receiving = false;
+                mMessageBuffer.clear();
+            } else {
+                //Insert all other characters into the buffer
+                if(receiving && buffer[i] != 0x00)
+                    mMessageBuffer.put(buffer[i]);
+            }
+        }
     }
 
     @Override
